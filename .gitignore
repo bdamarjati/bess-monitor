@@ -1,0 +1,7 @@
+docs/
+.env
+/bess-monitor
+/fakepub
+*.db
+*.db-wal
+*.db-shm

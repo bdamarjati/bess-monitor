@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>BESS Monitor, Sign in</title>
+<style>
+:root {
+  --page: #091D33; --card: #0F2B48; --input: #0A2038; --line: #3F7AB0;
+  --text: #F1FAF6; --text2: #A8C3DA; --nav: #CFE3F3;
+  --accent: #0C81E4; --deep: #0C4E8C; --focus: #CCF1CD;
+  --fault: #FF7A7A; --fault-bg: #4A1D2B;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: var(--page); color: var(--text); font: 16px/1.4 var(--font); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.wrap { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 24px; }
+.brand { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 24px; font-weight: 800; }
+.logo { width: 48px; height: 48px; border-radius: 14px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.card { background: var(--card); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+h1 { margin: 0; font-size: 24px; font-weight: 800; }
+.sub { margin: 4px 0 0; font-size: 14px; color: var(--text2); }
+.alert { display: flex; align-items: center; gap: 12px; background: var(--fault-bg); border: 1px solid var(--fault);
+  border-radius: 12px; padding: 12px 16px; font-size: 14px; }
+.alert[hidden] { display: none; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+label { font-size: 14px; font-weight: 700; }
+input { width: 100%; min-height: 48px; background: var(--input); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; padding: 0 14px; font: inherit; }
+.pw { position: relative; }
+.pw input { padding-right: 76px; }
+.toggle { position: absolute; right: 4px; top: 2px; min-height: 44px; min-width: 64px; padding: 0 12px; background: transparent;
+  border: none; border-radius: 10px; color: var(--nav); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.submit { min-height: 52px; background: var(--deep); border: 2px solid var(--accent); border-radius: 14px; color: #fff;
+  font: inherit; font-weight: 800; cursor: pointer; }
+.submit:hover { background: #0E5EA6; }
+svg { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" stroke="#fff"><path d="M3 8h15a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><path d="M22 11v2"/><path d="M10 10l-2 2h4l-2 2"/></svg></div>
+    BESS Monitor
+  </div>
+
+  <form class="card" method="post" action="/login" aria-labelledby="login-h">
+    <div>
+      <h1 id="login-h">Sign in</h1>
+      <p class="sub">Enter your username and password to view your battery system.</p>
+    </div>
+
+    <div class="alert" id="error" role="alert" hidden>
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" stroke="#FF7A7A"><path d="M12 3l10 18H2z"/><path d="M12 10v4"/><path d="M12 17.5h.01"/></svg>
+      <div><strong>Sign in failed.</strong> <span id="error-text">Incorrect username or password.</span></div>
+    </div>
+
+    <div class="field">
+      <label for="user">Username</label>
+      <input id="user" name="user" type="text" autocomplete="username" required autofocus>
+    </div>
+    <div class="field">
+      <label for="pass">Password</label>
+      <div class="pw">
+        <input id="pass" name="pass" type="password" autocomplete="current-password" required>
+        <button type="button" class="toggle" id="toggle" aria-label="Show password" aria-pressed="false">Show</button>
+      </div>
+    </div>
+
+    <button type="submit" class="submit">Sign in</button>
+  </form>
+</div>
+<script>
+"use strict";
+const err = new URLSearchParams(location.search).get("error");
+if (err) {
+  document.getElementById("error").hidden = false;
+  if (err === "locked") document.getElementById("error-text").textContent = "Too many attempts. Try again in 15 minutes.";
+}
+const pass = document.getElementById("pass"), toggle = document.getElementById("toggle");
+toggle.addEventListener("click", () => {
+  const show = pass.type === "password";
+  pass.type = show ? "text" : "password";
+  toggle.textContent = show ? "Hide" : "Show";
+  toggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+  toggle.setAttribute("aria-pressed", show);
+});
+</script>
+</body>
+</html>
